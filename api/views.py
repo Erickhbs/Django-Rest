@@ -26,18 +26,17 @@ def addPessoa(request):
         s.save()
         return Response(s.data, status=status.HTTP_201_CREATED)
     
-    return Response(s.data, status=status.HTTP_400_BAD_REQUEST)
+    return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+@api_view(['PUT'])
 def updatePessoa(request, chave):
     p = Pessoa.objects.get(id=chave)
-    s = PessoaSerializer(isinstance=p, data=request.data)
-
+    s = PessoaSerializer(instance=p, data=request.data)
     if s.is_valid():
-        s.save
+        s.save()
         return Response(s.data, status=status.HTTP_200_OK)
     
-    return Response(s.data, status=status.HTTP_400_BAD_REQUEST)
+    return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 def deletePessoa(request, chave):
