@@ -7,4 +7,5 @@ urlpatterns = [
     path('profissional/<int:chave>', views.getPessoa),
     path('profissional/atualizar/<int:chave>', views.updatePessoa),
     path('profissional/apagar/<int:chave>', views.deletePessoa),
+    
 ]
