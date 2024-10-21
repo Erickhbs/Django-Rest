@@ -9,23 +9,32 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR.parent / 'arch' / 'web'
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(_yl_ue(i*vj@vbhiu4mzci%gcpo^pl(idh7ml^l@)_3wiwih6'
+#vamos buscar no arquivo env o valor de SECRET_KEY e atribuir ao settings do projeto
+SECRET_KEY = os.getenv('SECRET_KEY', 'NaoEncontrada')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#vamos buscar no arquivo env o valor de DEBUG e atribuir ao settings do projeto
+DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
-ALLOWED_HOSTS = []
+
+#no allowed hosts, vamos usar metodos string para pegarmos o valor da variavel de ambiente,
+#tomando cuidado para retirar as virgulas e os espacos (caso haja mais de um hoost)
+ALLOWED_HOSTS = [
+    hosts.strip() for hosts in os.getenv('ALLOWED_HOSTS','').split(',')
+    if hosts.strip()
+]
 
 
 # Application definition
@@ -74,11 +83,15 @@ WSGI_APPLICATION = 'djangorest_py.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+#vamos buscar no arquivo env os valores da database e atribuir ao settings do projeto
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'NaoEncontrada'),
+        'NAME': os.getenv('POSTGRES_DB', 'NaoEncontrada'),
+        'USER': os.getenv('POSTGRES_USER', 'NaoEncontrada'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'NaoEncontrada'),
+        'HOST': os.getenv('POSTGRES_HOST', 'NaoEncontrada'),
+        'PORT': os.getenv('POSTGRES_PORT', 'NaoEncontrada'),
     }
 }
 
@@ -105,9 +118,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -117,7 +130,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+# /arch/web/static
+STATIC_ROOT = BASE_DIR / 'static'
+
+MEDIA_URL = '/media/'
+# /arch/web/media
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
