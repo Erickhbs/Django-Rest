@@ -7,6 +7,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 #output python em tempo real 
 ENV PYTHONUNBUFFERED 1 
 
+# Atualiza os pacotes e instala o Netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
+
 #copia a pasta do projeto e o script para o container docker
 COPY docker_django /docker_django
 COPY scripts /scripts
@@ -33,10 +36,10 @@ RUN python -m venv /venv && \
     
 #Adicionar a pasta scripts e venv/bin
 #no $PATH do container
-ENV PATH=" /scripts:/venv/bin:$PATH"
+ENV PATH="/scripts:/venv/bin:$PATH"
 
 #Muda o usuario para o duser
 USER duser
 
 #Executa o arquivo scripts/commands.sh
-CMD ["commands.sh"]
+CMD ["/scripts/commands.sh"]

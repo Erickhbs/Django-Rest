@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  docker_django:
+    container_name: docker_django
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./docker_django:/docker_django
+      - ./arch/web/static:/arch/web/static/
+      - ./arch/web/static:/arch/web/media/
+    env_file:
+      - ./env_files/.env
+  psql:
+    container_name: psql  
+    image: postgres
+    volumes:
+      - ./arch/postgres/data:/var/lib/postgresql/data/
+    env_file:
+      - ./env_files/.env
